@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2023/05/16 21:35:26.000.991,=C:\Users\jacks\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 12:49:07.000.682,=C:\Users\jacks\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 12:51:31.000.777,D:\To-Do List\uHome.dfm=C:\Users\jacks\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2026/02/10 12:51:31.000.777,D:\To-Do List\uHome.pas=C:\Users\jacks\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 12:52:19.000.165,D:\To-Do List\ToDoList.dproj=C:\Users\jacks\OneDrive\Documentos\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2026/02/10 13:05:12.000.918,D:\To-Do List\uHome.pas=</Transaction>
+    <Transaction>2026/02/10 13:08:51.000.715,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 13:21:03.000.747,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 13:21:24.000.229,D:\To-Do List\Unit1.pas=D:\To-Do List\view\uHome.pas</Transaction>
+    <Transaction>2026/02/10 13:21:24.000.229,D:\To-Do List\Unit1.dfm=D:\To-Do List\view\uHome.dfm</Transaction>
+    <Transaction>2026/02/10 13:30:54.000.998,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 13:31:11.000.143,D:\To-Do List\view\uPrincipal.pas=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 13:31:11.000.143,D:\To-Do List\view\uPrincipal.dfm=D:\To-Do List\Unit1.dfm</Transaction>
+    <Transaction>2026/02/10 13:53:58.000.789,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 13:54:11.000.718,D:\To-Do List\view\uCadastrar.dfm=D:\To-Do List\Unit1.dfm</Transaction>
+    <Transaction>2026/02/10 13:54:11.000.718,D:\To-Do List\view\uCadastrar.pas=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 13:54:22.000.305,=D:\To-Do List\Unit2.pas</Transaction>
+    <Transaction>2026/02/10 13:54:36.000.619,D:\To-Do List\uConsultar.dfm=D:\To-Do List\Unit2.dfm</Transaction>
+    <Transaction>2026/02/10 13:54:36.000.619,D:\To-Do List\uConsultar.pas=D:\To-Do List\Unit2.pas</Transaction>
+    <Transaction>2026/02/10 15:32:04.000.308,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 15:32:25.000.744,D:\To-Do List\Unit1.pas=D:\To-Do List\infra\uDMConexao.pas</Transaction>
+    <Transaction>2026/02/10 15:32:50.000.913,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 15:33:19.000.445,D:\To-Do List\Unit1.pas=D:\To-Do List\model\uTarefa.pas</Transaction>
+    <Transaction>2026/02/10 15:33:29.000.292,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 15:33:44.000.931,D:\To-Do List\Unit1.pas=D:\To-Do List\dao\uTarefaDAO.pas</Transaction>
+    <Transaction>2026/02/10 15:34:13.000.336,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 15:34:37.000.444,D:\To-Do List\Unit1.pas=D:\To-Do List\service\uTarefaService.pas</Transaction>
+    <Transaction>2026/02/10 16:29:41.000.836,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 16:46:19.000.279,=D:\To-Do List\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 16:54:25.000.209,D:\To-Do List\Unit1.dfm=D:\To-Do List\infra\Unit1.dfm</Transaction>
+    <Transaction>2026/02/10 16:54:25.000.209,D:\To-Do List\Unit1.pas=D:\To-Do List\infra\Unit1.pas</Transaction>
+    <Transaction>2026/02/10 16:54:50.000.949,D:\To-Do List\infra\uDMConexao.pas=</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="dao"/>
+    <File Path="dao\uTarefaDAO.pas"/>
+    <File Path="infra"/>
+    <File Path="infra\uDMConexao.pas"/>
+    <File Path="infra\uDMConexao.dfm"/>
+    <File Path="model"/>
+    <File Path="model\uTarefa.pas"/>
+    <File Path="service"/>
+    <File Path="service\uTarefaService.pas"/>
+    <File Path="view"/>
+    <File Path="view\uCadastrar.pas"/>
+    <File Path="view\uCadastrar.dfm"/>
+    <File Path="view\uPrincipal.pas"/>
+    <File Path="view\uPrincipal.dfm"/>
+    <File Path="view\uConsultar.pas"/>
+    <File Path="view\uConsultar.dfm"/>
+  </ProjectSortOrder>
+</BorlandProject>

@@ -1,0 +1,204 @@
+unit uCadastrar;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
+  FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf, FireDAC.Comp.UI,
+  System.ImageList, Vcl.ImgList, Vcl.ToolWin, uTarefa, uTarefaService, uTarefaDAO, uDMConexao,
+  Vcl.ExtCtrls;
+
+type
+  TfrmCadastrar = class(TForm)
+    edTitulo: TEdit;
+    dtData: TDateTimePicker;
+    lbTitulo: TLabel;
+    lbDescricao: TLabel;
+    lbData: TLabel;
+    lbStatus: TLabel;
+    cbStatus: TComboBox;
+    ToolBar1: TToolBar;
+    btSalvar: TToolButton;
+    ToolButton1: TToolButton;
+    btPesquisar: TToolButton;
+    ToolButton2: TToolButton;
+    btExcluir: TToolButton;
+    ToolButton3: TToolButton;
+    btNovo: TToolButton;
+    ImageList1: TImageList;
+    memDescricao: TMemo;
+    lbCod: TLabel;
+    edCod: TEdit;
+    pnPrincipal: TPanel;
+    lbStatusDAO: TLabel;
+    procedure btSalvarClick(Sender: TObject);
+    procedure edCodExit(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btExcluirClick(Sender: TObject);
+  private
+    { Private declarations }
+    FTarefa : TTarefa;
+    FStatusDAO : TStatusDAO;
+
+    procedure CarregaDados;
+    procedure Salvar;
+    procedure LimpaCampos;
+    procedure StatusDAO(prStatus : TStatusDAO);
+  public
+    { Public declarations }
+
+    procedure CarregarTarefa(prTarefa : TTarefa);
+  end;
+
+var
+  frmCadastrar: TfrmCadastrar;
+
+implementation
+
+{$R *.dfm}
+
+{ TfrmCadastrar }
+
+procedure TfrmCadastrar.btExcluirClick(Sender: TObject);
+var
+  wService : TTarefaService;
+begin
+  if FStatusDAO = sdUpdate then
+    begin
+       wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetConnection));
+
+       try
+         wService.Excluir(StrToIntDef(edCod.Text, 0));
+       finally
+         wService.Free;
+       end;
+    end;
+end;
+
+procedure TfrmCadastrar.btSalvarClick(Sender: TObject);
+begin
+  Salvar;
+end;
+
+procedure TfrmCadastrar.CarregaDados;
+var
+  wTarefa  : TTarefa;
+  wService : TTarefaService;
+begin
+  if Assigned(FTarefa) then
+    wTarefa := FTarefa
+  else
+    wTarefa := TTarefa.Create;
+
+  wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetConnection));
+
+  try
+    wTarefa := wService.TarefaPorId(StrToInt(edCod.Text));
+
+    if Assigned(wTarefa) then
+      begin
+        edTitulo.Text := wTarefa.Titulo;
+        memDescricao.Lines.Add(wTarefa.Descricao);
+        dtData.DateTime := wTarefa.DataCriacao;
+        cbStatus.ItemIndex := Ord(wTarefa.Status);
+        StatusDAO(wService.StatusDAO);
+      end
+    else
+      LimpaCampos;
+  finally
+    wService.Free;
+  end;
+end;
+
+procedure TfrmCadastrar.CarregarTarefa(prTarefa: TTarefa);
+begin
+  FTarefa := prTarefa;
+
+  if Assigned(FTarefa) then
+    begin
+      edTitulo.Text      := FTarefa.Titulo;
+      memDescricao.Text  := FTarefa.Descricao;
+      cbStatus.ItemIndex := Ord(FTarefa.Status);
+    end;
+end;
+
+procedure TfrmCadastrar.edCodExit(Sender: TObject);
+begin
+  if StrToIntDef(edCod.Text, 0) <> 0 then
+    CarregaDados
+  else
+    LimpaCampos;
+end;
+
+procedure TfrmCadastrar.FormShow(Sender: TObject);
+begin
+  StatusDAO(sdInsert);
+  edCod.SetFocus;
+end;
+
+procedure TfrmCadastrar.LimpaCampos;
+begin
+  edTitulo.Text      := '';
+  memDescricao.Lines.Clear;
+  dtData.DateTime    := Now;
+  cbStatus.ItemIndex := 0;
+end;
+
+procedure TfrmCadastrar.Salvar;
+var
+  wTarefa  : TTarefa;
+  wService : TTarefaService;
+begin
+  if Trim(edTitulo.Text) = '' then
+    begin
+      ShowMessage('Informe o título da tarefa.');
+      Exit;
+    end;
+
+
+  if Assigned(FTarefa) then
+    wTarefa := FTarefa
+  else
+    wTarefa := TTarefa.Create;
+
+  try
+    wTarefa.Id        := StrToIntDef(edCod.Text, 0);
+    wTarefa.Titulo    := edTitulo.Text;
+    wTarefa.Descricao := memDescricao.Text;
+    wTarefa.Status    := TStatusTarefa(cbStatus.ItemIndex);
+
+    wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetConnection));
+
+    try
+      wService.StatusDAO := FStatusDAO;
+      wService.Salvar(wTarefa);
+    finally
+      wService.Free;
+      ShowMessage('Tarefa salva com sucesso!');
+    end;
+
+    ModalResult := mrOk;
+
+  except
+    on E: Exception do
+      begin
+        ShowMessage('Erro ao salvar tarefa: ' + E.Message);
+
+        if not Assigned(FTarefa) then
+          wTarefa.Free;
+      end;
+  end;
+end;
+
+procedure TfrmCadastrar.StatusDAO(prStatus: TStatusDAO);
+begin
+  FStatusDAO := prStatus;
+
+  case FStatusDAO of
+    sdInsert : lbStatusDAO.Caption := 'Inserindo...';
+    sdUpdate : lbStatusDAO.Caption := 'Editando...';
+  end;
+end;
+
+end.

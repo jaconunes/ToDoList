@@ -1,0 +1,49 @@
+unit uTarefaService;
+
+interface
+
+uses
+  System.Generics.Collections, uTarefa, uTarefaDAO;
+
+type
+  TStatusDAO = (sdInsert, stUpdate);
+
+type
+  TTarefaService = class
+  private
+    FDAO       : TTarefaDAO;
+    FStatusDAO : TStatusDAO;
+  public
+    constructor Create(prDAO: TTarefaDAO);
+    procedure Salvar(prTarefa: TTarefa);
+    procedure Excluir(prId: Integer);
+    function Listar(prStatus: Integer = -1): TObjectList<TTarefa>;
+  end;
+
+implementation
+
+constructor TTarefaService.Create(prDAO: TTarefaDAO);
+begin
+  FDAO := prDAO;
+end;
+
+procedure TTarefaService.Salvar(prTarefa: TTarefa);
+begin
+  if prTarefa.Id = 0 then
+    FDAO.Inserir(prTarefa)
+  else
+    FDAO.Atualizar(prTarefa);
+end;
+
+procedure TTarefaService.Excluir(prId: Integer);
+begin
+  FDAO.Excluir(prId);
+end;
+
+function TTarefaService.Listar(prStatus: Integer): TObjectList<TTarefa>;
+begin
+  Result := FDAO.Listar(prStatus);
+end;
+
+
+end.

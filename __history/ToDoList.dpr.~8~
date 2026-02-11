@@ -1,0 +1,18 @@
+program ToDoList;
+
+uses
+  Vcl.Forms,
+  uPrincipal in 'view\uPrincipal.pas' {frmPrincipal},
+  uCadastrar in 'view\uCadastrar.pas' {Form1},
+  uConsultar in 'uConsultar.pas' {Form2};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TForm2, Form2);
+  Application.Run;
+end.

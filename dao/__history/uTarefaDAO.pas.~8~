@@ -1,0 +1,88 @@
+unit uTarefaDAO;
+
+interface
+
+uses
+  System.Generics.Collections, FireDAC.Comp.Client, uTarefa;
+
+type
+  TTarefaDAO = class
+  private
+    FQuery: TFDQuery;
+  public
+    constructor Create(prQuery: TFDQuery);
+    procedure Inserir(prTarefa: TTarefa);
+    procedure Atualizar(prTarefa: TTarefa);
+    procedure Excluir(prId: Integer);
+    function Listar(prStatus: Integer = -1): TObjectList<TTarefa>;
+  end;
+
+implementation
+
+constructor TTarefaDAO.Create(prQuery: TFDQuery);
+begin
+  FQuery := prQuery;
+end;
+
+procedure TTarefaDAO.Inserir(prTarefa: TTarefa);
+begin
+  FQuery.SQL.Text := 'INSERT INTO tarefas (titulo, descricao, status) ' +
+                     'VALUES (:titulo, :descricao, :status)';
+
+  FQuery.ParamByName('titulo').AsString    := prTarefa.Titulo;
+  FQuery.ParamByName('descricao').AsString := prTarefa.Descricao;
+  FQuery.ParamByName('status').AsInteger   := Ord(prTarefa.Status);
+  FQuery.ExecSQL;
+
+  prTarefa.Id := FQuery.Connection.GetLastAutoGenValue('tarefas');
+end;
+
+procedure TTarefaDAO.Atualizar(prTarefa: TTarefa);
+begin
+  FQuery.SQL.Text := 'UPDATE tarefas SET titulo = :titulo, descricao = :descricao, status = :status ' +
+                     'WHERE id=:id';
+
+  FQuery.ParamByName('id').AsInteger := prTarefa.Id;
+  FQuery.ParamByName('titulo').AsString := prTarefa.Titulo;
+  FQuery.ParamByName('descricao').AsString := prTarefa.Descricao;
+  FQuery.ParamByName('status').AsInteger := Ord(prTarefa.Status);
+  FQuery.ExecSQL;
+end;
+
+procedure TTarefaDAO.Excluir(prId: Integer);
+begin
+  FQuery.SQL.Text := 'DELETE FROM tarefas WHERE id=:id';
+  FQuery.ParamByName('id').AsInteger := prId;
+  FQuery.ExecSQL;
+end;
+
+function TTarefaDAO.Listar(prStatus: Integer): TObjectList<TTarefa>;
+var
+  Tarefa: TTarefa;
+begin
+  Result := TObjectList<TTarefa>.Create(True);
+
+  FQuery.SQL.Text := 'SELECT * FROM tarefas';
+  if prStatus >= 0 then
+    begin
+      FQuery.SQL.Add('WHERE status = :status');
+      FQuery.ParamByName('status').AsInteger := prStatus;
+    end;
+
+  FQuery.Open;
+
+  while not FQuery.Eof do
+    begin
+      Tarefa             := TTarefa.Create;
+      Tarefa.Id          := FQuery.FieldByName('id').AsInteger;
+      Tarefa.Titulo      := FQuery.FieldByName('titulo').AsString;
+      Tarefa.Descricao   := FQuery.FieldByName('descricao').AsString;
+      Tarefa.Status      := TStatusTarefa(FQuery.FieldByName('status').AsInteger);
+      Tarefa.DataCriacao := FQuery.FieldByName('data_criacao').AsDateTime;
+
+      Result.Add(Tarefa);
+      FQuery.Next;
+    end;
+end;
+
+end.

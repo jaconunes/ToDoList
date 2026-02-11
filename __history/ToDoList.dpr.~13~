@@ -1,0 +1,23 @@
+program ToDoList;
+
+uses
+  Vcl.Forms,
+  uPrincipal in 'view\uPrincipal.pas' {frmPrincipal},
+  uCadastrar in 'view\uCadastrar.pas' {frmCadastrar},
+  uConsultar in 'view\uConsultar.pas' {frmConsultar},
+  uTarefa in 'model\uTarefa.pas',
+  uTarefaDAO in 'dao\uTarefaDAO.pas',
+  uTarefaService in 'service\uTarefaService.pas',
+  uDMConexao in 'infra\uDMConexao.pas' {udmConexao: TudmConexao};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TfrmCadastrar, frmCadastrar);
+  Application.CreateForm(TfrmConsultar, frmConsultar);
+  Application.CreateForm(TudmConexao, udmConexao);
+  Application.Run;
+end.

@@ -1,0 +1,68 @@
+object frmConsultar: TfrmConsultar
+  Left = 0
+  Top = 0
+  Caption = 'Consultar Tarefas'
+  ClientHeight = 441
+  ClientWidth = 1012
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnShow = FormShow
+  TextHeight = 15
+  object grTarefas: TDBGrid
+    Left = 8
+    Top = 64
+    Width = 996
+    Height = 369
+    DataSource = dsTarefas
+    TabOrder = 0
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'id'
+        Title.Caption = 'ID'
+        Width = 41
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'titulo'
+        Title.Caption = 'T'#237'tulo'
+        Width = 261
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'descricao'
+        Title.Caption = 'Descri'#231#227'o'
+        Width = 384
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'status'
+        Title.Caption = 'Status'
+        Width = 108
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'data_criacao'
+        Title.Caption = 'Data Cria'#231#227'o'
+        Width = 148
+        Visible = True
+      end>
+  end
+  object dsTarefas: TDataSource
+    Left = 864
+    Top = 152
+  end
+end

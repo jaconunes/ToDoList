@@ -1,0 +1,19 @@
+object udmConexao: TudmConexao
+  Height = 480
+  Width = 640
+  object FDConnection: TFDConnection
+    LoginPrompt = False
+    Left = 72
+    Top = 64
+  end
+  object FDriver: TFDPhysMySQLDriverLink
+    VendorLib = 'D:\To-Do List\Win32\Debug\libmysql.dll'
+    Left = 72
+    Top = 128
+  end
+  object FDWaitCursor: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 72
+    Top = 192
+  end
+end

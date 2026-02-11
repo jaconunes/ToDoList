@@ -1,0 +1,45 @@
+unit uTarefaService;
+
+interface
+
+uses
+  System.Generics.Collections, uTarefa, uTarefaDAO;
+
+type
+  TTarefaService = class
+  private
+    FDAO: TTarefaDAO;
+  public
+    constructor Create(ADAO: TTarefaDAO);
+    procedure Salvar(ATarefa: TTarefa);
+    procedure Excluir(AId: Integer);
+    function Listar(AStatus: Integer = -1): TObjectList<TTarefa>;
+  end;
+
+implementation
+
+constructor TTarefaService.Create(ADAO: TTarefaDAO);
+begin
+  FDAO := ADAO;
+end;
+
+procedure TTarefaService.Salvar(ATarefa: TTarefa);
+begin
+  if ATarefa.Id = 0 then
+    FDAO.Inserir(ATarefa)
+  else
+    FDAO.Atualizar(ATarefa);
+end;
+
+procedure TTarefaService.Excluir(AId: Integer);
+begin
+  FDAO.Excluir(AId);
+end;
+
+function TTarefaService.Listar(AStatus: Integer): TObjectList<TTarefa>;
+begin
+  Result := FDAO.Listar(AStatus);
+end;
+
+
+end.
