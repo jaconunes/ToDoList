@@ -1,0 +1,64 @@
+unit uPrincipal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ExtCtrls, uConsultar, uCadastrar, uDMConexao;
+
+type
+  TfrmPrincipal = class(TForm)
+    MainMenu1   : TMainMenu;
+    pmCadastrar : TMenuItem;
+    pmConsultar : TMenuItem;
+    procedure FormShow(Sender: TObject);
+    procedure pmCadastrarClick(Sender: TObject);
+    procedure pmConsultarClick(Sender: TObject);
+  private
+    { Private declarations }
+    Form : TForm;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPrincipal: TfrmPrincipal;
+
+implementation
+
+{$R *.dfm}
+
+procedure TfrmPrincipal.FormShow(Sender: TObject);
+begin
+  try
+    dmConexao.Conectar;
+//    ShowMessage('Conectado ao MySQL com sucesso!');
+  except
+  on E: Exception do
+    ShowMessage(E.Message);
+  end;
+end;
+
+procedure TfrmPrincipal.pmCadastrarClick(Sender: TObject);
+begin
+  Form := TfrmCadastrar.Create(nil);
+
+  try
+    Form.ShowModal;
+  finally
+    Form.Free;
+  end;
+end;
+
+procedure TfrmPrincipal.pmConsultarClick(Sender: TObject);
+begin
+  Form := TfrmConsultar.Create(nil);
+
+  try
+    Form.ShowModal;
+  finally
+    Form.Free;
+  end;
+end;
+
+end.

@@ -41,6 +41,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure cbStatusExit(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
     FTarefa    : TTarefa;
@@ -92,13 +93,15 @@ end;
 
 procedure TfrmCadastrar.btPesquisarClick(Sender: TObject);
 begin
-  Form := TfrmConsultar.Create(nil);
-
-  try
-    Form.ShowModal;
-  finally
-    Form.Free;
-  end;
+//  Form := TfrmConsultar.Create(nil);
+//
+//  try
+//    Form.ShowModal;
+//  finally
+//    Form.Free;
+//  end;
+  Form := TfrmConsultar.Create(Self);
+  Form.Show;
 end;
 
 procedure TfrmCadastrar.btSalvarClick(Sender: TObject);
@@ -123,6 +126,8 @@ begin
 
     if Assigned(wTarefa) then
       begin
+        LimpaCampos;
+
         edTitulo.Text := wTarefa.Titulo;
         memDescricao.Lines.Add(wTarefa.Descricao);
         dtData.DateTime := wTarefa.DataCriacao;
@@ -161,6 +166,16 @@ begin
     LimpaCampos;
 end;
 
+procedure TfrmCadastrar.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if (Owner <> nil) and (Owner is TfrmConsultar) then
+    begin
+      TfrmConsultar(Owner).Enabled := True;
+      TfrmConsultar(Owner).cbStatusChange(TfrmConsultar(Owner).cbStatus);
+    end;
+end;
+
 procedure TfrmCadastrar.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -184,6 +199,9 @@ procedure TfrmCadastrar.FormShow(Sender: TObject);
 begin
   StatusDAO(sdInsert);
   edCod.SetFocus;
+
+  if (Owner <> nil) and (Owner is TfrmConsultar) then
+    TfrmConsultar(Owner).Enabled := False;
 end;
 
 procedure TfrmCadastrar.LimpaCampos;

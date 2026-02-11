@@ -34,22 +34,30 @@ implementation
 {$R *.dfm}
 
 procedure TudmConexao.Conectar;
+var
+  wSLConfig : TStringList;
 begin
-  FDriver.VendorLib      := ExtractFilePath(ParamStr(0)) + 'libmysql.dll';
-  FDConnection.Connected := False;
+  wSLConfig := TStringList.Create;
+  try
+    wSLConfig.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'tarefas.config');
+    FDriver.VendorLib      := ExtractFilePath(ParamStr(0)) + 'libmysql.dll';
+    FDConnection.Connected := False;
 
-  FDConnection.Params.Clear;
-  FDConnection.Params.DriverID := 'MySQL';
+    FDConnection.Params.Clear;
+    FDConnection.Params.DriverID := 'MySQL';
 
-  FDConnection.Params.Add('Server=localhost');
-  FDConnection.Params.Add('Database=db_tarefas');
-  FDConnection.Params.Add('User_Name=admin');
-  FDConnection.Params.Add('Password=123456');
-  FDConnection.Params.Add('Port=3306');
-  FDConnection.Params.Add('CharacterSet=utf8mb4');
+    FDConnection.Params.Add(Format('Server=%s', [wSLConfig.Values['server']]));
+    FDConnection.Params.Add(Format('Database=%s', [wSLConfig.Values['database']]));
+    FDConnection.Params.Add(Format('User_Name=%s', [wSLConfig.Values['username']]));
+    FDConnection.Params.Add(Format('Password=%s', [wSLConfig.Values['password']]));
+    FDConnection.Params.Add(Format('Port=%s', [wSLConfig.Values['port']]));
+    FDConnection.Params.Add('CharacterSet=utf8mb4');
 
-  FDConnection.LoginPrompt := False;
-  FDConnection.Connected   := True;
+    FDConnection.LoginPrompt := False;
+    FDConnection.Connected   := True;
+  finally
+    wSLConfig.Free;
+  end;
 end;
 
 procedure TudmConexao.DataModuleCreate(Sender: TObject);

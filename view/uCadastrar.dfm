@@ -11,6 +11,7 @@ object frmCadastrar: TfrmCadastrar
   Font.Name = 'Segoe UI'
   Font.Style = []
   KeyPreview = True
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 15

@@ -2,7 +2,7 @@ object frmConsultar: TfrmConsultar
   Left = 0
   Top = 0
   Caption = 'Consultar Tarefas'
-  ClientHeight = 441
+  ClientHeight = 436
   ClientWidth = 1012
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,65 +11,10 @@ object frmConsultar: TfrmConsultar
   Font.Name = 'Segoe UI'
   Font.Style = []
   KeyPreview = True
+  OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 15
-  object grTarefas: TDBGrid
-    Left = 8
-    Top = 48
-    Width = 996
-    Height = 385
-    DataSource = dsTarefas
-    Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 0
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -12
-    TitleFont.Name = 'Segoe UI'
-    TitleFont.Style = []
-    OnCellClick = grTarefasCellClick
-    OnDrawColumnCell = grTarefasDrawColumnCell
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'id'
-        Title.Caption = 'ID'
-        Width = 41
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'titulo'
-        Title.Caption = 'T'#237'tulo'
-        Width = 261
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'descricao'
-        Title.Caption = 'Descri'#231#227'o'
-        Width = 384
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'status'
-        PickList.Strings = (
-          'Pendente'
-          'Em andamento'
-          'Conclu'#237'da')
-        Title.Caption = 'Status'
-        Width = 108
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'data_criacao'
-        Title.Caption = 'Data Cria'#231#227'o'
-        Width = 148
-        Visible = True
-      end>
-  end
   object ToolBar1: TToolBar
     AlignWithMargins = True
     Left = 3
@@ -84,10 +29,18 @@ object frmConsultar: TfrmConsultar
     Images = ImageList1
     List = True
     AllowTextButtons = True
-    TabOrder = 1
+    TabOrder = 0
     Transparent = False
-    object btRetroceder: TToolButton
+    object ToolButton6: TToolButton
       Left = 0
+      Top = 0
+      Width = 8
+      Caption = 'ToolButton6'
+      ImageIndex = 6
+      Style = tbsSeparator
+    end
+    object btRetroceder: TToolButton
+      Left = 8
       Top = 0
       Hint = 'Retroceder'
       Caption = 'btRetroceder'
@@ -97,7 +50,7 @@ object frmConsultar: TfrmConsultar
       OnClick = btRetrocederClick
     end
     object ToolButton1: TToolButton
-      Left = 24
+      Left = 32
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -105,7 +58,7 @@ object frmConsultar: TfrmConsultar
       Style = tbsSeparator
     end
     object btAvancar: TToolButton
-      Left = 32
+      Left = 40
       Top = 0
       Hint = 'Avan'#231'ar'
       Caption = 'btAvancar'
@@ -115,7 +68,7 @@ object frmConsultar: TfrmConsultar
       OnClick = btAvancarClick
     end
     object ToolButton2: TToolButton
-      Left = 56
+      Left = 64
       Top = 0
       Width = 8
       Caption = 'ToolButton2'
@@ -123,7 +76,7 @@ object frmConsultar: TfrmConsultar
       Style = tbsSeparator
     end
     object btAtualizar: TToolButton
-      Left = 64
+      Left = 72
       Top = 0
       Hint = 'Atualizar (Enter)'
       Caption = 'btAtualizar'
@@ -133,7 +86,7 @@ object frmConsultar: TfrmConsultar
       OnClick = btAtualizarClick
     end
     object ToolButton3: TToolButton
-      Left = 88
+      Left = 96
       Top = 0
       Width = 8
       Caption = 'ToolButton3'
@@ -141,7 +94,7 @@ object frmConsultar: TfrmConsultar
       Style = tbsSeparator
     end
     object btExcluir: TToolButton
-      Left = 96
+      Left = 104
       Top = 0
       Hint = 'Excluir (Del)'
       ImageIndex = 6
@@ -149,14 +102,40 @@ object frmConsultar: TfrmConsultar
       ShowHint = True
       OnClick = btExcluirClick
     end
+    object ToolButton5: TToolButton
+      Left = 128
+      Top = 0
+      Width = 8
+      Caption = 'ToolButton5'
+      ImageIndex = 8
+      Style = tbsSeparator
+    end
+    object btEditar: TToolButton
+      Left = 136
+      Top = 0
+      Hint = 'Editar (F4)'
+      Caption = 'btEditar'
+      ImageIndex = 4
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = btEditarClick
+    end
+    object ToolButton4: TToolButton
+      Left = 160
+      Top = 0
+      Width = 8
+      Caption = 'ToolButton4'
+      ImageIndex = 5
+      Style = tbsSeparator
+    end
   end
   object cbStatus: TComboBox
-    Left = 128
+    Left = 176
     Top = 8
     Width = 186
     Height = 23
     ItemIndex = 0
-    TabOrder = 2
+    TabOrder = 1
     Text = 'Todos'
     OnChange = cbStatusChange
     Items.Strings = (
@@ -164,6 +143,74 @@ object frmConsultar: TfrmConsultar
       'Pendente'
       'Em andamento'
       'Conclu'#237'da')
+  end
+  object pnPrincipal: TPanel
+    Left = 3
+    Top = 37
+    Width = 1006
+    Height = 396
+    Caption = 'pnPrincipal'
+    TabOrder = 2
+    object grTarefas: TDBGrid
+      Left = 8
+      Top = 11
+      Width = 985
+      Height = 374
+      DataSource = dsTarefas
+      Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      TabOrder = 0
+      TitleFont.Charset = DEFAULT_CHARSET
+      TitleFont.Color = clWindowText
+      TitleFont.Height = -12
+      TitleFont.Name = 'Segoe UI'
+      TitleFont.Style = []
+      OnCellClick = grTarefasCellClick
+      OnDrawColumnCell = grTarefasDrawColumnCell
+      Columns = <
+        item
+          Expanded = False
+          FieldName = 'id'
+          ReadOnly = True
+          Title.Caption = 'ID'
+          Width = 41
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'titulo'
+          ReadOnly = True
+          Title.Caption = 'T'#237'tulo'
+          Width = 261
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'descricao'
+          ReadOnly = True
+          Title.Caption = 'Descri'#231#227'o'
+          Width = 384
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'status'
+          PickList.Strings = (
+            'Pendente'
+            'Em andamento'
+            'Conclu'#237'da')
+          Title.Caption = 'Status'
+          Width = 108
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'data_criacao'
+          ReadOnly = True
+          Title.Caption = 'Data Cria'#231#227'o'
+          Width = 148
+          Visible = True
+        end>
+    end
   end
   object dsTarefas: TDataSource
     Left = 864

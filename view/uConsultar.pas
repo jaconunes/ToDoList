@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, uTarefaService, uDMConexao, uTarefaDAO,
-  Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin, uTarefa;
+  Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin, uTarefa,
+  Vcl.ExtCtrls;
 
 type
   TfrmConsultar = class(TForm)
@@ -21,6 +22,11 @@ type
     btAtualizar: TToolButton;
     ToolButton3: TToolButton;
     btExcluir: TToolButton;
+    btEditar: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton6: TToolButton;
+    pnPrincipal: TPanel;
     procedure FormShow(Sender: TObject);
     procedure cbStatusChange(Sender: TObject);
     procedure grTarefasDrawColumnCell(Sender: TObject; const Rect: TRect;
@@ -34,6 +40,8 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure btExcluirClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btEditarClick(Sender: TObject);
   private
     { Private declarations }
     FDSTarefas : TDataSet;
@@ -47,6 +55,8 @@ var
   frmConsultar: TfrmConsultar;
 
 implementation
+
+uses uCadastrar;
 
 {$R *.dfm}
 
@@ -85,6 +95,17 @@ end;
 procedure TfrmConsultar.btAvancarClick(Sender: TObject);
 begin
   FDSTarefas.Next;
+end;
+
+procedure TfrmConsultar.btEditarClick(Sender: TObject);
+var
+  wCad : TfrmCadastrar;
+begin
+  wCad := TfrmCadastrar.Create(Self);
+
+  wCad.edCod.Text := FDSTarefas.FieldByName('id').AsString;
+  wCad.edCod.OnExit(wCad.edCod);
+  wCad.Show;
 end;
 
 procedure TfrmConsultar.btExcluirClick(Sender: TObject);
@@ -128,6 +149,13 @@ begin
   CarregaTarefas;
 end;
 
+procedure TfrmConsultar.FormClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  if (Owner <> nil) and (Owner.ClassName = 'TfrmCadastrar') then
+     TForm(Owner).Enabled := True;
+end;
+
 procedure TfrmConsultar.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -140,21 +168,27 @@ end;
 
 procedure TfrmConsultar.FormShow(Sender: TObject);
 begin
+  if (Owner <> nil) and (Owner.ClassName = 'TfrmCadastrar') then
+     TForm(Owner).Enabled := False;
+
   CarregaTarefas;
   dsTarefas.DataSet.FieldByName('status').OnGetText := StatusGetText;
   dsTarefas.DataSet.FieldByName('status').OnSetText := StatusSetText;
 end;
 
 procedure TfrmConsultar.grTarefasCellClick(Column: TColumn);
+var
+  wI, wPos : Integer;
+  wP       : TPoint;
 begin
   if Column.FieldName = 'status' then
-  begin
-    if not (dsTarefas.DataSet.State in dsEditModes) then
-      dsTarefas.DataSet.Edit;
+    begin
+      if not (dsTarefas.DataSet.State in dsEditModes) then
+        dsTarefas.DataSet.Edit;
 
-    grTarefas.SelectedField := Column.Field;
-    grTarefas.EditorMode := True;
-  end;
+      grTarefas.SelectedField := Column.Field;
+      grTarefas.EditorMode := True;
+    end;
 end;
 
 procedure TfrmConsultar.grTarefasDrawColumnCell(Sender: TObject;

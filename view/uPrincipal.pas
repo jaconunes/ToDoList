@@ -4,13 +4,15 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ExtCtrls, uConsultar, uCadastrar, uDMConexao;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.ExtCtrls, uConsultar, uCadastrar, uDMConexao,
+  Vcl.Imaging.jpeg;
 
 type
   TfrmPrincipal = class(TForm)
     MainMenu1   : TMainMenu;
     pmCadastrar : TMenuItem;
     pmConsultar : TMenuItem;
+    bgPrincipal: TImage;
     procedure FormShow(Sender: TObject);
     procedure pmCadastrarClick(Sender: TObject);
     procedure pmConsultarClick(Sender: TObject);
