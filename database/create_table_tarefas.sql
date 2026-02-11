@@ -1,0 +1,7 @@
+CREATE TABLE tarefas (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(150) NOT NULL,
+    descricao TEXT,
+    status SMALLINT NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

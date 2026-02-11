@@ -38,6 +38,9 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure btNovoClick(Sender: TObject);
     procedure btPesquisarClick(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure cbStatusExit(Sender: TObject);
   private
     { Private declarations }
     FTarefa    : TTarefa;
@@ -145,12 +148,36 @@ begin
     end;
 end;
 
+procedure TfrmCadastrar.cbStatusExit(Sender: TObject);
+begin
+  Salvar;
+end;
+
 procedure TfrmCadastrar.edCodExit(Sender: TObject);
 begin
   if StrToIntDef(edCod.Text, 0) <> 0 then
     CarregaDados
   else
     LimpaCampos;
+end;
+
+procedure TfrmCadastrar.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) then
+    self.Perform(WM_NEXTDLGCTL,0,0)
+  else
+  if (Key = VK_F3) then
+    btPesquisar.Click
+  else
+  if (Key = VK_DELETE) then
+    btExcluir.Click
+  else
+  if (Key = VK_F2) then
+    btNovo.Click
+  else
+  if Key = VK_ESCAPE then
+    Close;
 end;
 
 procedure TfrmCadastrar.FormShow(Sender: TObject);

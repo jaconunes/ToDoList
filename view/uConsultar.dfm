@@ -10,6 +10,8 @@ object frmConsultar: TfrmConsultar
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 15
   object grTarefas: TDBGrid
@@ -18,12 +20,14 @@ object frmConsultar: TfrmConsultar
     Width = 996
     Height = 385
     DataSource = dsTarefas
+    Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnCellClick = grTarefasCellClick
     OnDrawColumnCell = grTarefasDrawColumnCell
     Columns = <
       item
@@ -50,6 +54,10 @@ object frmConsultar: TfrmConsultar
       item
         Expanded = False
         FieldName = 'status'
+        PickList.Strings = (
+          'Pendente'
+          'Em andamento'
+          'Conclu'#237'da')
         Title.Caption = 'Status'
         Width = 108
         Visible = True
@@ -78,15 +86,15 @@ object frmConsultar: TfrmConsultar
     AllowTextButtons = True
     TabOrder = 1
     Transparent = False
-    object btSalvar: TToolButton
+    object btRetroceder: TToolButton
       Left = 0
       Top = 0
-      Hint = 'Salvar (Enter)'
-      Caption = 'btSalvar'
+      Hint = 'Retroceder'
+      Caption = 'btRetroceder'
       ImageIndex = 1
       ParentShowHint = False
       ShowHint = True
-      OnClick = btSalvarClick
+      OnClick = btRetrocederClick
     end
     object ToolButton1: TToolButton
       Left = 24
@@ -96,15 +104,15 @@ object frmConsultar: TfrmConsultar
       ImageIndex = 6
       Style = tbsSeparator
     end
-    object btPesquisar: TToolButton
+    object btAvancar: TToolButton
       Left = 32
       Top = 0
-      Hint = 'Pesquisar (F3)'
-      Caption = 'btPesquisar'
+      Hint = 'Avan'#231'ar'
+      Caption = 'btAvancar'
       ImageIndex = 0
       ParentShowHint = False
       ShowHint = True
-      OnClick = btPesquisarClick
+      OnClick = btAvancarClick
     end
     object ToolButton2: TToolButton
       Left = 56
@@ -114,14 +122,15 @@ object frmConsultar: TfrmConsultar
       ImageIndex = 6
       Style = tbsSeparator
     end
-    object btExcluir: TToolButton
+    object btAtualizar: TToolButton
       Left = 64
       Top = 0
-      Hint = 'Excluir (Del)'
-      Caption = 'btExcluir'
+      Hint = 'Atualizar (Enter)'
+      Caption = 'btAtualizar'
       ImageIndex = 2
       ParentShowHint = False
       ShowHint = True
+      OnClick = btAtualizarClick
     end
     object ToolButton3: TToolButton
       Left = 88
@@ -131,13 +140,14 @@ object frmConsultar: TfrmConsultar
       ImageIndex = 6
       Style = tbsSeparator
     end
-    object btNovo: TToolButton
+    object btExcluir: TToolButton
       Left = 96
       Top = 0
-      Hint = 'Novo (F2)'
+      Hint = 'Excluir (Del)'
       ImageIndex = 6
       ParentShowHint = False
       ShowHint = True
+      OnClick = btExcluirClick
     end
   end
   object cbStatus: TComboBox

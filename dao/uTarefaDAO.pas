@@ -69,10 +69,10 @@ begin
                  'FROM tarefas');
 
     if prStatus >= 0 then
-    begin
-      wQry.SQL.Add('WHERE status = :status');
-      wQry.ParamByName('status').AsInteger := prStatus;
-    end;
+      begin
+        wQry.SQL.Add('WHERE status = :status');
+        wQry.ParamByName('status').AsInteger := prStatus;
+      end;
 
     wQry.SQL.Add('ORDER BY data_criacao DESC');
     wQry.Open;

@@ -10,6 +10,8 @@ object frmCadastrar: TfrmCadastrar
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
+  OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 15
   object lbStatusDAO: TLabel
@@ -112,28 +114,28 @@ object frmCadastrar: TfrmCadastrar
       Left = 46
       Top = 139
       Width = 27
-      Height = 23
+      Height = 15
       Caption = 'Data:'
     end
     object lbDescricao: TLabel
       Left = 19
       Top = 80
       Width = 54
-      Height = 19
+      Height = 15
       Caption = 'Descri'#231#227'o:'
     end
     object lbStatus: TLabel
       Left = 38
       Top = 168
       Width = 35
-      Height = 20
+      Height = 15
       Caption = 'Status:'
     end
     object lbTitulo: TLabel
       Left = 39
       Top = 50
       Width = 34
-      Height = 24
+      Height = 15
       Caption = 'T'#237'tulo:'
     end
     object cbStatus: TComboBox
@@ -142,8 +144,9 @@ object frmCadastrar: TfrmCadastrar
       Width = 186
       Height = 23
       ItemIndex = 0
-      TabOrder = 0
+      TabOrder = 4
       Text = 'Pendente'
+      OnExit = cbStatusExit
       Items.Strings = (
         'Pendente'
         'Em andamento'
@@ -156,14 +159,14 @@ object frmCadastrar: TfrmCadastrar
       Height = 24
       Date = 46063.000000000000000000
       Time = 0.583965046294906600
-      TabOrder = 1
+      TabOrder = 3
     end
     object edCod: TEdit
       Left = 82
       Top = 18
       Width = 47
       Height = 23
-      TabOrder = 2
+      TabOrder = 0
       OnExit = edCodExit
     end
     object edTitulo: TEdit
@@ -171,14 +174,14 @@ object frmCadastrar: TfrmCadastrar
       Top = 47
       Width = 417
       Height = 23
-      TabOrder = 3
+      TabOrder = 1
     end
     object memDescricao: TMemo
       Left = 82
       Top = 76
       Width = 417
       Height = 54
-      TabOrder = 4
+      TabOrder = 2
     end
   end
   object ImageList1: TImageList
