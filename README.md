@@ -29,7 +29,7 @@ O sistema utiliza **MySQL** como banco de dados e **FireDAC** para acesso aos da
 ---
 # ⚙ Configuração do Banco de Dados
 
-A conexão com o banco é configurada através do arquivo "tarefas.config". Esse arquivo deve estar na mesma pasta do executável (.exe).
+A conexão com o banco é configurada através do arquivo "[tarefas.config](https://github.com/jaconunes/ToDoList/blob/main/Win32/Debug/tarefas.config)". Esse arquivo deve estar na mesma pasta do executável (.exe).
 
 # 📄 Estrutura do arquivo tarefas.config
 
