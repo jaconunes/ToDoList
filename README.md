@@ -138,6 +138,16 @@ Servidor incorreto ou firewall bloqueando porta.
 
 Verifique se a DLL corresponde à arquitetura do projeto (x86 ou x64).
 
+## 🖥 Screenshots
+
+
+![Tela Principal](https://github.com/jaconunes/ToDoList/blob/main/screenshots/Captura%20de%20tela%202026-02-11%20142530.png)
+
+![Tela Cadastro](https://github.com/jaconunes/ToDoList/blob/main/screenshots/Captura%20de%20tela%202026-02-11%20142626.png)
+
+![Tela Consulta](https://github.com/jaconunes/ToDoList/blob/main/screenshots/Captura%20de%20tela%202026-02-11%20142709.png)
+
+
 # 📈 Melhorias Futuras
 
 - Paginação de resultados
