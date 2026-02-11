@@ -5,10 +5,13 @@ uses
   uPrincipal in 'view\uPrincipal.pas' {frmPrincipal},
   uCadastrar in 'view\uCadastrar.pas' {frmCadastrar},
   uConsultar in 'view\uConsultar.pas' {frmConsultar},
-  uTarefa in 'model\uTarefa.pas',
-  uTarefaDAO in 'dao\uTarefaDAO.pas',
+  uTarefa in 'domain\uTarefa.pas',
   uTarefaService in 'service\uTarefaService.pas',
-  uDMConexao in 'infra\uDMConexao.pas' {udmConexao: TudmConexao};
+  uDMConexao in 'infra\uDMConexao.pas' {udmConexao: TDataModule},
+  uITarefaRepository in 'repository\uITarefaRepository.pas',
+  uTarefaRepository in 'repository\uTarefaRepository.pas',
+  uITarefaService in 'service\uITarefaService.pas',
+  uServiceFactory in 'factory\uServiceFactory.pas';
 
 {$R *.res}
 
@@ -16,8 +19,6 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfrmPrincipal, frmPrincipal);
-  Application.CreateForm(TfrmCadastrar, frmCadastrar);
-  Application.CreateForm(TfrmConsultar, frmConsultar);
   Application.CreateForm(TudmConexao, dmConexao);
   Application.Run;
 end.

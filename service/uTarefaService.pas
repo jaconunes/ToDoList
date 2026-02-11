@@ -3,29 +3,27 @@ unit uTarefaService;
 interface
 
 uses
-  System.Generics.Collections, uTarefa, uTarefaDAO, Data.DB;
+  System.Generics.Collections, uTarefa, uTarefaRepository, Data.DB, uITarefaService, uITarefaRepository;
 
 type
-  TStatusDAO = (sdInsert, sdUpdate);
-
-type
-  TTarefaService = class
+  TTarefaService = class(TInterfacedObject, ITarefaService)
   private
-    FDAO       : TTarefaDAO;
+    FDAO       : ITarefaRepository;
     FStatusDAO : TStatusDAO;
   public
-    constructor Create(prDAO: TTarefaDAO);
+    constructor Create(prDAO: ITarefaRepository);
     procedure Salvar(prTarefa: TTarefa);
     procedure Excluir(prId: Integer);
     function TarefaPorId(prId: Integer) : TTarefa;
-    function Listar(prStatus: Integer = -1): TObjectList<TTarefa>;
     function GetDSTarefas(prStatus: Integer = -1): TDataSet;
-    property StatusDAO : TStatusDAO read FStatusDAO write FStatusDAO;
+    function GetStatusDAO: TStatusDAO;
+    procedure SetStatusDAO(prStatusDAO: TStatusDAO);
+
   end;
 
 implementation
 
-constructor TTarefaService.Create(prDAO: TTarefaDAO);
+constructor TTarefaService.Create(prDAO: ITarefaRepository);
 begin
   FDAO       := prDAO;
   FStatusDAO := sdInsert;
@@ -37,6 +35,11 @@ begin
      FDAO.Inserir(prTarefa)
   else
      FDAO.Atualizar(prTarefa);
+end;
+
+procedure TTarefaService.SetStatusDAO(prStatusDAO: TStatusDAO);
+begin
+  FStatusDAO := prStatusDAO;
 end;
 
 function TTarefaService.TarefaPorId(prId: Integer): TTarefa;
@@ -57,10 +60,10 @@ begin
   Result := FDAO.GetDSTarefas(prStatus);
 end;
 
-function TTarefaService.Listar(prStatus: Integer): TObjectList<TTarefa>;
-begin
-  Result := FDAO.Listar(prStatus);
-end;
 
+function TTarefaService.GetStatusDAO: TStatusDAO;
+begin
+  Result := FStatusDAO
+end;
 
 end.

@@ -6,8 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf, FireDAC.Comp.UI,
-  System.ImageList, Vcl.ImgList, Vcl.ToolWin, uTarefa, uTarefaService, uTarefaDAO, uDMConexao,
-  Vcl.ExtCtrls, uConsultar;
+  System.ImageList, Vcl.ImgList, Vcl.ToolWin, uTarefa, uTarefaService, uTarefaRepository, uDMConexao,
+  Vcl.ExtCtrls, uConsultar, uITarefaService, uServiceFactory;
 
 type
   TfrmCadastrar = class(TForm)
@@ -42,11 +42,13 @@ type
       Shift: TShiftState);
     procedure cbStatusExit(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
-    FTarefa    : TTarefa;
-    FStatusDAO : TStatusDAO;
-    Form       : TForm;
+    FTarefa        : TTarefa;
+    FStatusDAO     : TStatusDAO;
+    Form           : TForm;
+    FTarefaService : ITarefaService;
     procedure CarregaDados;
     procedure Salvar;
     procedure LimpaCampos;
@@ -67,18 +69,13 @@ implementation
 { TfrmCadastrar }
 
 procedure TfrmCadastrar.btExcluirClick(Sender: TObject);
-var
-  wService : TTarefaService;
 begin
   if FStatusDAO = sdUpdate then
     begin
-       wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetFDQuery));
-
        try
-         wService.Excluir(StrToIntDef(edCod.Text, 0));
+         FTarefaService.Excluir(StrToIntDef(edCod.Text, 0));
          LimpaCampos;
        finally
-         wService.Free;
          ShowMessage('Tarefa excluída com sucesso!');
        end;
     end;
@@ -93,13 +90,6 @@ end;
 
 procedure TfrmCadastrar.btPesquisarClick(Sender: TObject);
 begin
-//  Form := TfrmConsultar.Create(nil);
-//
-//  try
-//    Form.ShowModal;
-//  finally
-//    Form.Free;
-//  end;
   Form := TfrmConsultar.Create(Self);
   Form.Show;
 end;
@@ -112,32 +102,29 @@ end;
 procedure TfrmCadastrar.CarregaDados;
 var
   wTarefa  : TTarefa;
-  wService : TTarefaService;
 begin
   if Assigned(FTarefa) then
     wTarefa := FTarefa
   else
     wTarefa := TTarefa.Create;
 
-  wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetFDQuery));
-
+  wTarefa := FTarefaService.TarefaPorId(StrToInt(edCod.Text));
   try
-    wTarefa := wService.TarefaPorId(StrToInt(edCod.Text));
-
     if Assigned(wTarefa) then
       begin
         LimpaCampos;
 
-        edTitulo.Text := wTarefa.Titulo;
+        edTitulo.Text      := wTarefa.Titulo;
         memDescricao.Lines.Add(wTarefa.Descricao);
-        dtData.DateTime := wTarefa.DataCriacao;
+        dtData.DateTime    := wTarefa.DataCriacao;
         cbStatus.ItemIndex := Ord(wTarefa.Status);
-        StatusDAO(wService.StatusDAO);
+
+        StatusDAO(FTarefaService.GetStatusDAO);
       end
     else
       LimpaCampos;
   finally
-    wService.Free;
+    wTarefa.Free;
   end;
 end;
 
@@ -174,6 +161,11 @@ begin
       TfrmConsultar(Owner).Enabled := True;
       TfrmConsultar(Owner).cbStatusChange(TfrmConsultar(Owner).cbStatus);
     end;
+end;
+
+procedure TfrmCadastrar.FormCreate(Sender: TObject);
+begin
+   FTarefaService := TServiceFactory.CreateTarefaService;
 end;
 
 procedure TfrmCadastrar.FormKeyDown(Sender: TObject; var Key: Word;
@@ -215,7 +207,6 @@ end;
 procedure TfrmCadastrar.Salvar;
 var
   wTarefa  : TTarefa;
-  wService : TTarefaService;
 begin
   if Trim(edTitulo.Text) = '' then
     begin
@@ -223,7 +214,6 @@ begin
       edTitulo.SetFocus;
       Exit;
     end;
-
 
   if Assigned(FTarefa) then
     wTarefa := FTarefa
@@ -236,13 +226,10 @@ begin
     wTarefa.Descricao := memDescricao.Text;
     wTarefa.Status    := TStatusTarefa(cbStatus.ItemIndex);
 
-    wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetFDQuery));
-
     try
-      wService.StatusDAO := FStatusDAO;
-      wService.Salvar(wTarefa);
+      FTarefaService.Salvar(wTarefa);
     finally
-      wService.Free;
+      wTarefa.Free;
       ShowMessage('Tarefa salva com sucesso!');
     end;
 

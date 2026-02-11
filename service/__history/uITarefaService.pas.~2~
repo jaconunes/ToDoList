@@ -1,0 +1,17 @@
+unit uITarefaService;
+
+interface
+
+uses Data.DB, uTarefa;
+
+type
+  ITarefaService = interface
+    function Listar: TDataSet;
+    procedure Salvar(ATarefa: TTarefa);
+    procedure Excluir(AId: Integer);
+  end;
+
+
+implementation
+
+end.

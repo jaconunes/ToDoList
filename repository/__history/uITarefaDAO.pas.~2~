@@ -1,0 +1,18 @@
+unit uITarefaDAO;
+
+interface
+
+uses Data.DB, uTarefa;
+
+type
+  ITarefaDAO = interface
+    function Listar: TDataSet;
+    procedure Inserir(ATarefa: TTarefa);
+    procedure Atualizar(ATarefa: TTarefa);
+    procedure Excluir(AId: Integer);
+  end;
+
+
+implementation
+
+end.

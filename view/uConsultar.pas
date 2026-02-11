@@ -4,9 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, uTarefaService, uDMConexao, uTarefaDAO,
-  Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin, uTarefa,
-  Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.Grids, Vcl.DBGrids, uTarefaService, uDMConexao, uTarefaRepository,
+  Vcl.StdCtrls, System.ImageList, Vcl.ImgList, Vcl.ComCtrls, Vcl.ToolWin, uTarefa, Vcl.ExtCtrls, uITarefaService, uServiceFactory;
 
 type
   TfrmConsultar = class(TForm)
@@ -42,10 +41,12 @@ type
     procedure btExcluirClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btEditarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
-    FDSTarefas : TDataSet;
-    FTarefa    : TTarefa;
+    FDSTarefas     : TDataSet;
+    FTarefa        : TTarefa;
+    FTarefaService : ITarefaService;
     procedure CarregaTarefas;
   public
     { Public declarations }
@@ -65,7 +66,6 @@ uses uCadastrar;
 procedure TfrmConsultar.btAtualizarClick(Sender: TObject);
 var
   wTarefa  : TTarefa;
-  wService : TTarefaService;
 begin
   if dsTarefas.DataSet.State = dsEdit then
     dsTarefas.DataSet.Post;
@@ -75,7 +75,6 @@ begin
   else
     wTarefa := TTarefa.Create;
 
-  wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetFDQuery));
   try
     wTarefa.Id          := dsTarefas.DataSet.FieldByName('id').AsInteger;
     wTarefa.Titulo      := dsTarefas.DataSet.FieldByName('titulo').AsString;
@@ -83,10 +82,9 @@ begin
     wTarefa.Status      := TStatusTarefa(dsTarefas.DataSet.FieldByName('status').AsInteger);
     wTarefa.DataCriacao := dsTarefas.DataSet.FieldByName('data_criacao').AsDateTime;
 
-    wService.StatusDAO := sdUpdate;
-    wService.Salvar(wTarefa);
+    FTarefaService.SetStatusDAO(sdUpdate);
+    FTarefaService.Salvar(wTarefa);
   finally
-    wService.Free;
     wTarefa.Free;
     ShowMessage('Tarefa salva com sucesso!');
   end;
@@ -109,15 +107,11 @@ begin
 end;
 
 procedure TfrmConsultar.btExcluirClick(Sender: TObject);
-var
-  wService : TTarefaService;
 begin
-  wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetFDQuery));
   try
-    wService.Excluir(dsTarefas.DataSet.FieldByName('id').AsInteger);
+    FTarefaService.Excluir(dsTarefas.DataSet.FieldByName('id').AsInteger);
     cbStatus.OnChange(cbStatus);
   finally
-    wService.Free;
     ShowMessage('Tarefa excludída com sucesso!');
   end;
 end;
@@ -128,18 +122,11 @@ begin
 end;
 
 procedure TfrmConsultar.CarregaTarefas;
-var
-   wService : TTarefaService;
 begin
-  wService := TTarefaService.Create(TTarefaDAO.Create(dmConexao.GetFDQuery));
-  try
-    if Assigned(FDSTarefas) then
-       FDSTarefas.Free;
+  if Assigned(FDSTarefas) then
+    FDSTarefas.Free;
 
-    FDSTarefas := wService.GetDSTarefas(cbStatus.ItemIndex - 1);
-  finally
-    wService.Free;
-  end;
+  FDSTarefas := FTarefaService.GetDSTarefas(cbStatus.ItemIndex - 1);
 
   dsTarefas.DataSet := FDSTarefas;
 end;
@@ -154,6 +141,11 @@ procedure TfrmConsultar.FormClose(Sender: TObject;
 begin
   if (Owner <> nil) and (Owner.ClassName = 'TfrmCadastrar') then
      TForm(Owner).Enabled := True;
+end;
+
+procedure TfrmConsultar.FormCreate(Sender: TObject);
+begin
+  FTarefaService := TServiceFactory.CreateTarefaService;
 end;
 
 procedure TfrmConsultar.FormKeyDown(Sender: TObject; var Key: Word;

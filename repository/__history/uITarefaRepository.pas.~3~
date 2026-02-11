@@ -1,0 +1,20 @@
+unit uITarefaRepository;
+
+interface
+
+uses
+  Data.DB, uTarefa;
+
+type
+  ITarefaDAO = interface
+    ['{B3E1A2F4-8C55-4F5A-9C7E-123456789001}']
+    function Listar: TDataSet;
+    procedure Inserir(ATarefa: TTarefa);
+    procedure Atualizar(ATarefa: TTarefa);
+    procedure Excluir(AId: Integer);
+  end;
+
+implementation
+
+end.
+

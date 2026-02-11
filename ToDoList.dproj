@@ -136,13 +136,16 @@
         <DCCReference Include="view\uConsultar.pas">
             <Form>frmConsultar</Form>
         </DCCReference>
-        <DCCReference Include="model\uTarefa.pas"/>
-        <DCCReference Include="dao\uTarefaDAO.pas"/>
+        <DCCReference Include="domain\uTarefa.pas"/>
         <DCCReference Include="service\uTarefaService.pas"/>
         <DCCReference Include="infra\uDMConexao.pas">
             <Form>udmConexao</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="repository\uITarefaRepository.pas"/>
+        <DCCReference Include="repository\uTarefaRepository.pas"/>
+        <DCCReference Include="service\uITarefaService.pas"/>
+        <DCCReference Include="factory\uServiceFactory.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

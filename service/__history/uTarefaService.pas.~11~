@@ -1,0 +1,66 @@
+unit uTarefaService;
+
+interface
+
+uses
+  System.Generics.Collections, uTarefa, uTarefaDAO, Data.DB, uITarefaService;
+
+type
+  TStatusDAO = (sdInsert, sdUpdate);
+
+type
+  TTarefaService = class(TInterfacedObject, ITarefaService)
+  private
+    FDAO       : ITTarefaDAO;
+    FStatusDAO : TStatusDAO;
+  public
+    constructor Create(prDAO: TTarefaDAO);
+    procedure Salvar(prTarefa: TTarefa);
+    procedure Excluir(prId: Integer);
+    function TarefaPorId(prId: Integer) : TTarefa;
+    function Listar(prStatus: Integer = -1): TObjectList<TTarefa>;
+    function GetDSTarefas(prStatus: Integer = -1): TDataSet;
+    property StatusDAO : TStatusDAO read FStatusDAO write FStatusDAO;
+  end;
+
+implementation
+
+constructor TTarefaService.Create(prDAO: TTarefaDAO);
+begin
+  FDAO       := prDAO;
+  FStatusDAO := sdInsert;
+end;
+
+procedure TTarefaService.Salvar(prTarefa: TTarefa);
+begin
+  if FStatusDAO = sdInsert then
+     FDAO.Inserir(prTarefa)
+  else
+     FDAO.Atualizar(prTarefa);
+end;
+
+function TTarefaService.TarefaPorId(prId: Integer): TTarefa;
+begin
+  Result     := FDAO.TarefaPorId(prId);
+
+  if Assigned(Result) then
+     FStatusDAO := sdUpdate;
+end;
+
+procedure TTarefaService.Excluir(prId: Integer);
+begin
+  FDAO.Excluir(prId);
+end;
+
+function TTarefaService.GetDSTarefas(prStatus: Integer): TDataSet;
+begin
+  Result := FDAO.GetDSTarefas(prStatus);
+end;
+
+function TTarefaService.Listar(prStatus: Integer): TObjectList<TTarefa>;
+begin
+  Result := FDAO.Listar(prStatus);
+end;
+
+
+end.
