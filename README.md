@@ -1,4 +1,4 @@
-# 📝 To-Do List - Gerenciador de Tarefas (Delphi VCL)
+﻿# 📝 To-Do List - Gerenciador de Tarefas (Delphi VCL)
 
 Aplicação Desktop desenvolvida em **Delphi (VCL)** para gerenciamento de tarefas (To-Do List), permitindo adicionar, editar, listar, filtrar e excluir tarefas.
 
@@ -80,7 +80,8 @@ CREATE TABLE tarefas (
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT,
     status INT NOT NULL DEFAULT 0,
-    data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    data_criacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    data_vencimento DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
