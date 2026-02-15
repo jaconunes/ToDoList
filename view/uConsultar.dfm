@@ -3,7 +3,7 @@ object frmConsultar: TfrmConsultar
   Top = 0
   Caption = 'Consultar Tarefas'
   ClientHeight = 436
-  ClientWidth = 1012
+  ClientWidth = 1114
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,7 +20,7 @@ object frmConsultar: TfrmConsultar
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 1006
+    Width = 1108
     Height = 39
     ButtonHeight = 28
     ButtonWidth = 92
@@ -32,6 +32,7 @@ object frmConsultar: TfrmConsultar
     AllowTextButtons = True
     TabOrder = 0
     Transparent = False
+    ExplicitWidth = 1006
     object ToolButton6: TToolButton
       Left = 0
       Top = 0
@@ -148,23 +149,28 @@ object frmConsultar: TfrmConsultar
   object pnPrincipal: TPanel
     Left = 3
     Top = 37
-    Width = 1006
+    Width = 1108
     Height = 396
     Caption = 'pnPrincipal'
     TabOrder = 2
     object grTarefas: TDBGrid
       Left = 8
       Top = 11
-      Width = 985
+      Width = 1089
       Height = 374
       DataSource = dsTarefas
-      Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
       TabOrder = 0
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
       TitleFont.Height = -12
       TitleFont.Name = 'Segoe UI'
-      TitleFont.Style = []
+      TitleFont.Style = [fsBold]
       OnCellClick = grTarefasCellClick
       OnDrawColumnCell = grTarefasDrawColumnCell
       Columns = <
@@ -195,6 +201,11 @@ object frmConsultar: TfrmConsultar
         item
           Expanded = False
           FieldName = 'status'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWhite
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
           PickList.Strings = (
             'Pendente'
             'Em andamento'
@@ -208,7 +219,14 @@ object frmConsultar: TfrmConsultar
           FieldName = 'data_criacao'
           ReadOnly = True
           Title.Caption = 'Data Cria'#231#227'o'
-          Width = 148
+          Width = 140
+          Visible = True
+        end
+        item
+          Expanded = False
+          FieldName = 'data_vencimento'
+          Title.Caption = 'Vencimento'
+          Width = 126
           Visible = True
         end>
     end

@@ -27,12 +27,13 @@ end;
 
 procedure TTarefaDAO.Inserir(prTarefa: TTarefa);
 begin
-  FQuery.SQL.Text := 'INSERT INTO tarefas (titulo, descricao, status) ' +
-                     'VALUES (:titulo, :descricao, :status)';
+  FQuery.SQL.Text := 'INSERT INTO tarefas (titulo, descricao, status, data_vencimento) ' +
+                     'VALUES (:titulo, :descricao, :status, :data_vencimento)';
 
-  FQuery.ParamByName('titulo').AsString    := prTarefa.Titulo;
-  FQuery.ParamByName('descricao').AsString := prTarefa.Descricao;
-  FQuery.ParamByName('status').AsInteger   := Ord(prTarefa.Status);
+  FQuery.ParamByName('titulo').AsString             := prTarefa.Titulo;
+  FQuery.ParamByName('descricao').AsString          := prTarefa.Descricao;
+  FQuery.ParamByName('status').AsInteger            := Ord(prTarefa.Status);
+  FQuery.ParamByName('data_vencimento').AsDateTime  := prTarefa.DataVencimento;
   FQuery.ExecSQL;
 
   prTarefa.Id := FQuery.Connection.GetLastAutoGenValue('tarefas');
@@ -40,13 +41,14 @@ end;
 
 procedure TTarefaDAO.Atualizar(prTarefa: TTarefa);
 begin
-  FQuery.SQL.Text := 'UPDATE tarefas SET titulo = :titulo, descricao = :descricao, status = :status ' +
+  FQuery.SQL.Text := 'UPDATE tarefas SET titulo = :titulo, descricao = :descricao, status = :status, data_vencimento = :data_vencimento ' +
                      'WHERE id=:id';
 
-  FQuery.ParamByName('id').AsInteger := prTarefa.Id;
-  FQuery.ParamByName('titulo').AsString := prTarefa.Titulo;
-  FQuery.ParamByName('descricao').AsString := prTarefa.Descricao;
-  FQuery.ParamByName('status').AsInteger := Ord(prTarefa.Status);
+  FQuery.ParamByName('id').AsInteger                := prTarefa.Id;
+  FQuery.ParamByName('titulo').AsString             := prTarefa.Titulo;
+  FQuery.ParamByName('descricao').AsString          := prTarefa.Descricao;
+  FQuery.ParamByName('status').AsInteger            := Ord(prTarefa.Status);
+  FQuery.ParamByName('data_vencimento').AsDateTime  := prTarefa.DataVencimento;
   FQuery.ExecSQL;
 end;
 
@@ -64,7 +66,8 @@ begin
   wQry := TFDQuery.Create(nil);
   try
     wQry.Connection := FQuery.Connection;
-    wQry.SQL.Add('SELECT id, titulo, CAST(descricao AS VARCHAR(255)) AS descricao, status, data_criacao ' +
+    wQry.SQL.Add('SELECT id, titulo, CAST(descricao AS VARCHAR(255)) AS descricao, ' +
+                 'status, data_criacao, data_vencimento ' +
                  'FROM tarefas');
 
     if prStatus >= 0 then
@@ -82,35 +85,6 @@ begin
     raise;
   end;
 end;
-
-//function TTarefaDAO.Listar(prStatus: Integer): TObjectList<TTarefa>;
-//var
-//  wTarefa: TTarefa;
-//begin
-//  Result := TObjectList<TTarefa>.Create(True);
-//
-//  FQuery.SQL.Text := 'SELECT * FROM tarefas';
-//  if prStatus >= 0 then
-//    begin
-//      FQuery.SQL.Add('WHERE status = :status');
-//      FQuery.ParamByName('status').AsInteger := prStatus;
-//    end;
-//
-//  FQuery.Open;
-//
-//  while not FQuery.Eof do
-//    begin
-//      wTarefa             := TTarefa.Create;
-//      wTarefa.Id          := FQuery.FieldByName('id').AsInteger;
-//      wTarefa.Titulo      := FQuery.FieldByName('titulo').AsString;
-//      wTarefa.Descricao   := FQuery.FieldByName('descricao').AsString;
-//      wTarefa.Status      := TStatusTarefa(FQuery.FieldByName('status').AsInteger);
-//      wTarefa.DataCriacao := FQuery.FieldByName('data_criacao').AsDateTime;
-//
-//      Result.Add(wTarefa);
-//      FQuery.Next;
-//    end;
-//end;
 
 function TTarefaDAO.TarefaPorId(prId: Integer): TTarefa;
 var

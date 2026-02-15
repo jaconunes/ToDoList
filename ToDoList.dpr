@@ -11,7 +11,12 @@ uses
   uITarefaRepository in 'repository\uITarefaRepository.pas',
   uTarefaRepository in 'repository\uTarefaRepository.pas',
   uITarefaService in 'service\uITarefaService.pas',
-  uServiceFactory in 'factory\uServiceFactory.pas';
+  uServiceFactory in 'factory\uServiceFactory.pas',
+  uFeriadoService in 'external\uFeriadoService.pas',
+  uIFeriadoService in 'external\uIFeriadoService.pas',
+  uExternalFactory in 'factory\uExternalFactory.pas',
+  uFeriadoCache in 'external\uFeriadoCache.pas',
+  uFeriadoModel in 'external\model\uFeriadoModel.pas';
 
 {$R *.res}
 

@@ -1,0 +1,74 @@
+unit uTarefaService;
+
+interface
+
+uses
+  Vcl.Dialogs, Vcl.Controls, uTarefa, uTarefaRepository, Data.DB, uITarefaService, uITarefaRepository;
+
+type
+  TTarefaService = class(TInterfacedObject, ITarefaService)
+  private
+    FDAO       : ITarefaRepository;
+    FStatusDAO : TStatusDAO;
+  public
+    constructor Create(prDAO: ITarefaRepository);
+    procedure Salvar(prTarefa: TTarefa);
+    function Excluir(prId: Integer): Boolean;
+    function TarefaPorId(prId: Integer) : TTarefa;
+    function GetDSTarefas(prStatus: Integer = -1): TDataSet;
+    function GetStatusDAO: TStatusDAO;
+    procedure SetStatusDAO(prStatusDAO: TStatusDAO);
+
+  end;
+
+implementation
+
+constructor TTarefaService.Create(prDAO: ITarefaRepository);
+begin
+  FDAO       := prDAO;
+  FStatusDAO := sdInsert;
+end;
+
+procedure TTarefaService.Salvar(prTarefa: TTarefa);
+begin
+  if FStatusDAO = sdInsert then
+     FDAO.Inserir(prTarefa)
+  else
+     FDAO.Atualizar(prTarefa);
+end;
+
+procedure TTarefaService.SetStatusDAO(prStatusDAO: TStatusDAO);
+begin
+  FStatusDAO := prStatusDAO;
+end;
+
+function TTarefaService.TarefaPorId(prId: Integer): TTarefa;
+begin
+  Result     := FDAO.TarefaPorId(prId);
+
+  if Assigned(Result) then
+     FStatusDAO := sdUpdate;
+end;
+
+procedure TTarefaService.Excluir(prId: Integer): Boolean;
+begin
+  Result := False;
+ if (MessageDlg('Deseja mesmo excluir a tarefa?', mtWarning, [mbYes, mbNo], 0, mbNo) = mrYes) then
+   begin
+     FDAO.Excluir(prId);
+     Result := False;
+   end;
+end;
+
+function TTarefaService.GetDSTarefas(prStatus: Integer): TDataSet;
+begin
+  Result := FDAO.GetDSTarefas(prStatus);
+end;
+
+
+function TTarefaService.GetStatusDAO: TStatusDAO;
+begin
+  Result := FStatusDAO
+end;
+
+end.

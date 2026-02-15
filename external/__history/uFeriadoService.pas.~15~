@@ -1,0 +1,87 @@
+unit uFeriadoService;
+
+interface
+
+uses
+  System.SysUtils, System.DateUtils, System.Generics.Collections, System.Net.HttpClient, System.JSON, uIFeriadoService, uFeriadoModel;
+
+type
+  TFeriadoService = class(TInterfacedObject, IFeriadoService)
+  private
+    class var FCache: TDictionary<Integer, TObjectList<TFeriado>>;
+    function CarregarFeriadosDoAno(prAno: Integer): TObjectList<TFeriado>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+  end;
+
+implementation
+
+function TFeriadoService.CarregarFeriadosDoAno(prAno: Integer):  TObjectList<TFeriado>;
+var
+  wHTTP         : THTTPClient;
+  wResponse     : IHTTPResponse;
+  wJSONArray    : TJSONArray;
+  wJSONObject   : TJSONObject;
+  wI            : Integer;
+  wDataFeriado  : TDate;
+  wDesc         : String;
+begin
+  Result := TObjectList<TFeriado>.Create(True);
+
+  wHTTP := THTTPClient.Create;
+  try
+    wResponse := wHTTP.Get(Format('https://date.nager.at/api/v3/PublicHolidays/%d/BR', [prAno]));
+
+    if wResponse.StatusCode = 200 then
+    begin
+      wJSONArray := TJSONObject.ParseJSONValue(wResponse.ContentAsString) as TJSONArray;
+      try
+        for wI := 0 to wJSONArray.Count - 1 do
+        begin
+          wJSONObject  := wJSONArray.Items[wI] as TJSONObject;
+          wDataFeriado := ISO8601ToDate(wJSONObject.GetValue<string>('date'));
+          wDesc        := wJSONObject.GetValue<string>('localName');
+          Result.Add(TFeriado.Create(wDataFeriado, wDesc));
+        end;
+      finally
+        wJSONArray.Free;
+      end;
+    end;
+  finally
+    wHTTP.Free;
+  end;
+end;
+
+constructor TFeriadoService.Create;
+begin
+  if FCache = nil then
+    FCache := TDictionary<Integer, TObjectList<TFeriado>>.Create;
+end;
+
+destructor TFeriadoService.Destroy;
+begin
+
+  inherited;
+end;
+
+function TFeriadoService.EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+var
+  wMes, wDia : Word;
+  wAno       : Word;
+  wLista     : TObjectList<TFeriado>;
+begin
+   DecodeDate(prData, wAno, wMes, wDia);
+
+  if not FCache.TryGetValue(wAno, wLista) then
+    begin
+      wLista := CarregarFeriadosDoAno(wAno);
+      FCache.Add(wAno, wLista);
+    end;
+
+  Result := wLista.Contains(prData);
+end;
+
+end.
+

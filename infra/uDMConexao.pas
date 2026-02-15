@@ -9,7 +9,7 @@ uses
   FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, FireDAC.Comp.UI,
   FireDAC.Phys.MySQL, Data.DB, FireDAC.Comp.Client, FireDAC.Phys.PG,
   FireDAC.Phys.PGDef, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
-  FireDAC.DApt, FireDAC.Comp.DataSet;
+  FireDAC.DApt, FireDAC.Comp.DataSet, vcl.Dialogs;
 
 type
   TudmConexao = class(TDataModule)
@@ -18,10 +18,14 @@ type
     FDWaitCursor : TFDGUIxWaitCursor;
     FDQuery      : TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
+  private
+    FConnected   : Boolean;
   public
     function GetFDQuery : TFDQuery;
     procedure Conectar;
     function GetConnection : TFDConnection;
+
+    property Connected : Boolean read FConnected write FConnected;
   end;
 
 var
@@ -37,32 +41,47 @@ procedure TudmConexao.Conectar;
 var
   wSLConfig : TStringList;
 begin
-  wSLConfig := TStringList.Create;
+  if not FileExists(ExtractFilePath(ParamStr(0)) + 'tarefas.config') then
+    begin
+      ShowMessage('O arquivo de configuração não foi encontrado!' + #13 + #13 +
+                  'Não foi possível fazer a conexão com o banco de dados.');
+      Exit;
+    end;
+
   try
-    wSLConfig.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'tarefas.config');
-    FDriver.VendorLib      := ExtractFilePath(ParamStr(0)) + 'libmysql.dll';
-    FDConnection.Connected := False;
+    wSLConfig := TStringList.Create;
+    try
+      wSLConfig.LoadFromFile(ExtractFilePath(ParamStr(0)) + 'tarefas.config');
+      FDriver.VendorLib      := ExtractFilePath(ParamStr(0)) + 'libmysql.dll';
+      FDConnection.Connected := False;
 
-    FDConnection.Params.Clear;
-    FDConnection.Params.DriverID := 'MySQL';
+      FDConnection.Params.Clear;
+      FDConnection.Params.DriverID := 'MySQL';
 
-    FDConnection.Params.Add(Format('Server=%s', [wSLConfig.Values['server']]));
-    FDConnection.Params.Add(Format('Database=%s', [wSLConfig.Values['database']]));
-    FDConnection.Params.Add(Format('User_Name=%s', [wSLConfig.Values['username']]));
-    FDConnection.Params.Add(Format('Password=%s', [wSLConfig.Values['password']]));
-    FDConnection.Params.Add(Format('Port=%s', [wSLConfig.Values['port']]));
-    FDConnection.Params.Add('CharacterSet=utf8mb4');
+      FDConnection.Params.Add(Format('Server=%s',    [wSLConfig.Values['server']]));
+      FDConnection.Params.Add(Format('Database=%s',  [wSLConfig.Values['database']]));
+      FDConnection.Params.Add(Format('User_Name=%s', [wSLConfig.Values['username']]));
+      FDConnection.Params.Add(Format('Password=%s',  [wSLConfig.Values['password']]));
+      FDConnection.Params.Add(Format('Port=%s',      [wSLConfig.Values['port']]));
+      FDConnection.Params.Add(       'CharacterSet=utf8mb4');
 
-    FDConnection.LoginPrompt := False;
-    FDConnection.Connected   := True;
-  finally
-    wSLConfig.Free;
+      FDConnection.LoginPrompt := False;
+      FDConnection.Connected   := True;
+      Connected                := True;
+    finally
+      wSLConfig.Free;
+    end;
+  except on E : Exception do
+    begin
+      ShowMessage('Ocorreu erro de conexão com o banco: ' + E.Message);
+    end;
   end;
 end;
 
 procedure TudmConexao.DataModuleCreate(Sender: TObject);
 begin
   FDQuery.Connection := FDConnection;
+  Connected := False;
 end;
 
 function TudmConexao.GetConnection: TFDConnection;

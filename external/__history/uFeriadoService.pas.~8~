@@ -1,0 +1,56 @@
+unit uFeriadoService;
+
+interface
+
+uses
+  System.SysUtils, System.Generics.Collections, System.Net.HttpClient, System.JSON, uIFeriadoService;
+
+type
+  TFeriadoService = class(TInterfacedObject, IFeriadoService)
+  private
+    class var FCache: TDictionary<Integer, TList<TDate>>;
+    function CarregarFeriadosDoAno(prAno: Integer): TList<TDate>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+  end;
+
+implementation
+
+function TFeriadoService.CarregarFeriadosDoAno(prAno: Integer): TList<TDate>;
+begin
+
+end;
+
+constructor TFeriadoService.Create;
+begin
+  if FCache = nil then
+    FCache := TDictionary<Integer, TList<TDate>>.Create;
+end;
+
+destructor TFeriadoService.Destroy;
+begin
+
+  inherited;
+end;
+
+function TFeriadoService.EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+var
+  wMes, wDia : Word;
+  wAno       : Word;
+  wLista: TList<TDate>;
+begin
+   DecodeDate(prData, wAno, wMes, wDia);
+
+  if not FCache.TryGetValue(wAno, wLista) then
+    begin
+      wLista := CarregarFeriadosDoAno(wAno);
+      FCache.Add(wAno, wLista);
+    end;
+
+  Result := wLista.Contains(prData);
+end;
+
+end.
+

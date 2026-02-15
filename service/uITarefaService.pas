@@ -10,7 +10,7 @@ type
 type
   ITarefaService = interface
     procedure Salvar(prTarefa: TTarefa);
-    procedure Excluir(prId: Integer);
+    function Excluir(prId: Integer): Boolean;
     function TarefaPorId(prId: Integer) : TTarefa;
     function GetDSTarefas(prStatus: Integer = -1): TDataSet;
     function GetStatusDAO : TStatusDAO;

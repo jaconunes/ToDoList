@@ -140,13 +140,20 @@ object frmCadastrar: TfrmCadastrar
       Height = 15
       Caption = 'T'#237'tulo:'
     end
+    object lbVencto: TLabel
+      Left = 266
+      Top = 139
+      Width = 66
+      Height = 15
+      Caption = 'Vencimento:'
+    end
     object cbStatus: TComboBox
       Left = 82
       Top = 166
-      Width = 186
+      Width = 151
       Height = 23
       ItemIndex = 0
-      TabOrder = 4
+      TabOrder = 5
       Text = 'Pendente'
       OnExit = cbStatusExit
       Items.Strings = (
@@ -157,7 +164,7 @@ object frmCadastrar: TfrmCadastrar
     object dtData: TDateTimePicker
       Left = 82
       Top = 136
-      Width = 186
+      Width = 151
       Height = 24
       Date = 46063.000000000000000000
       Time = 0.583965046294906600
@@ -184,6 +191,15 @@ object frmCadastrar: TfrmCadastrar
       Width = 417
       Height = 54
       TabOrder = 2
+    end
+    object dtVencto: TDateTimePicker
+      Left = 348
+      Top = 136
+      Width = 151
+      Height = 24
+      Date = 46063.000000000000000000
+      Time = 0.583965046294906600
+      TabOrder = 4
     end
   end
   object ImageList1: TImageList

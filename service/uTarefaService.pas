@@ -3,7 +3,7 @@ unit uTarefaService;
 interface
 
 uses
-  System.Generics.Collections, uTarefa, uTarefaRepository, Data.DB, uITarefaService, uITarefaRepository;
+  System.SysUtils, Vcl.Dialogs, Vcl.Controls, uTarefa, uTarefaRepository, Data.DB, uITarefaService, uITarefaRepository;
 
 type
   TTarefaService = class(TInterfacedObject, ITarefaService)
@@ -13,12 +13,11 @@ type
   public
     constructor Create(prDAO: ITarefaRepository);
     procedure Salvar(prTarefa: TTarefa);
-    procedure Excluir(prId: Integer);
+    function Excluir(prId: Integer): Boolean;
     function TarefaPorId(prId: Integer) : TTarefa;
     function GetDSTarefas(prStatus: Integer = -1): TDataSet;
     function GetStatusDAO: TStatusDAO;
     procedure SetStatusDAO(prStatusDAO: TStatusDAO);
-
   end;
 
 implementation
@@ -32,9 +31,29 @@ end;
 procedure TTarefaService.Salvar(prTarefa: TTarefa);
 begin
   if FStatusDAO = sdInsert then
-     FDAO.Inserir(prTarefa)
+    begin
+      try
+        FDAO.Inserir(prTarefa);
+        ShowMessage('Tarefa salva com sucesso!');
+
+
+
+      except on E: Exception do
+        ShowMessage('Erro ao salvar tarefa: ' + E.Message);
+      end;
+    end
   else
-     FDAO.Atualizar(prTarefa);
+    begin
+      try
+        FDAO.Atualizar(prTarefa);
+        ShowMessage('Tarefa atualizada com sucesso!');
+
+
+
+      except on E: Exception do
+        ShowMessage('Erro ao atualizar tarefa: ' + E.Message);
+      end;
+    end;
 end;
 
 procedure TTarefaService.SetStatusDAO(prStatusDAO: TStatusDAO);
@@ -50,16 +69,28 @@ begin
      FStatusDAO := sdUpdate;
 end;
 
-procedure TTarefaService.Excluir(prId: Integer);
+function TTarefaService.Excluir(prId: Integer): Boolean;
 begin
-  FDAO.Excluir(prId);
+  Result := False;
+  if (MessageDlg('Deseja mesmo excluir a tarefa?', mtWarning, [mbYes, mbNo], 0, mbNo) = mrYes) then
+    begin
+      try
+        FDAO.Excluir(prId);
+        ShowMessage('Tarefa excluída com sucesso!');
+        Result := True;
+
+
+
+      except on E: Exception do
+        ShowMessage('Erro ao excluir tarefa: ' + E.Message);
+      end;
+    end;
 end;
 
 function TTarefaService.GetDSTarefas(prStatus: Integer): TDataSet;
 begin
   Result := FDAO.GetDSTarefas(prStatus);
 end;
-
 
 function TTarefaService.GetStatusDAO: TStatusDAO;
 begin

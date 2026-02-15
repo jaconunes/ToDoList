@@ -1,0 +1,86 @@
+unit uFeriadoService;
+
+interface
+
+uses
+  System.SysUtils, System.DateUtils, System.Generics.Collections, System.Net.HttpClient, System.JSON, uIFeriadoService;
+
+type
+  TFeriadoService = class(TInterfacedObject, IFeriadoService)
+  private
+    class var FCache: TDictionary<Integer, TList<TDate>>;
+    function CarregarFeriadosDoAno(prAno: Integer): TList<TDate>;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    function EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+  end;
+
+implementation
+
+function TFeriadoService.CarregarFeriadosDoAno(prAno: Integer): TList<TDate>;
+var
+  wHTTP         : THTTPClient;
+  wResponse     : IHTTPResponse;
+  wJSONArray    : TJSONArray;
+  wJSONObject   : TJSONObject;
+  wI            : Integer;
+  wDataFeriado  : TDate;
+begin
+  Result := TList<TDate>.Create;
+
+  wHTTP := THTTPClient.Create;
+  try
+    wResponse := wHTTP.Get(Format('https://date.nager.at/api/v3/PublicHolidays/%d/BR', [prAno]));
+
+    if wResponse.StatusCode = 200 then
+    begin
+      wJSONArray := TJSONObject.ParseJSONValue(wResponse.ContentAsString) as TJSONArray;
+      try
+        for wI := 0 to wJSONArray.Count - 1 do
+        begin
+          wJSONObject := wJSONArray.Items[wI] as TJSONObject;
+          wDataFeriado := ISO8601ToDate(wJSONObject.GetValue<string>('date'));
+
+          Result.Add(wDataFeriado);
+        end;
+      finally
+        wJSONArray.Free;
+      end;
+    end;
+  finally
+    wHTTP.Free;
+  end;
+end;
+
+constructor TFeriadoService.Create;
+begin
+  if FCache = nil then
+    FCache := TDictionary<Integer, TList<TDate>>.Create;
+end;
+
+destructor TFeriadoService.Destroy;
+begin
+
+  inherited;
+end;
+
+function TFeriadoService.EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+var
+  wMes, wDia : Word;
+  wAno       : Word;
+  wLista: TList<TDate>;
+begin
+   DecodeDate(prData, wAno, wMes, wDia);
+
+  if not FCache.TryGetValue(wAno, wLista) then
+    begin
+      wLista := CarregarFeriadosDoAno(wAno);
+      FCache.Add(wAno, wLista);
+    end;
+
+  Result := wLista.Contains(prData);
+end;
+
+end.
+

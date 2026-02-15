@@ -6,8 +6,8 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls,
   FireDAC.UI.Intf, FireDAC.VCLUI.Wait, FireDAC.Stan.Intf, FireDAC.Comp.UI,
-  System.ImageList, Vcl.ImgList, Vcl.ToolWin, uTarefa, uTarefaService, uTarefaRepository, uDMConexao,
-  Vcl.ExtCtrls, uConsultar, uITarefaService, uServiceFactory;
+  System.ImageList, Vcl.ImgList, Vcl.ToolWin, uTarefa,  Vcl.ExtCtrls, uConsultar, uITarefaService,
+  uServiceFactory, uIFeriadoService, uExternalFactory, uFeriadoModel;
 
 type
   TfrmCadastrar = class(TForm)
@@ -32,6 +32,8 @@ type
     edCod: TEdit;
     pnPrincipal: TPanel;
     lbStatusDAO: TLabel;
+    lbVencto: TLabel;
+    dtVencto: TDateTimePicker;
     procedure btSalvarClick(Sender: TObject);
     procedure edCodExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -49,6 +51,7 @@ type
     FStatusDAO     : TStatusDAO;
     Form           : TForm;
     FTarefaService : ITarefaService;
+    FFeriadoService: IFeriadoService;
     procedure CarregaDados;
     procedure Salvar;
     procedure LimpaCampos;
@@ -70,15 +73,8 @@ implementation
 
 procedure TfrmCadastrar.btExcluirClick(Sender: TObject);
 begin
-  if FStatusDAO = sdUpdate then
-    begin
-       try
-         FTarefaService.Excluir(StrToIntDef(edCod.Text, 0));
-         LimpaCampos;
-       finally
-         ShowMessage('Tarefa excluída com sucesso!');
-       end;
-    end;
+  if (FStatusDAO = sdUpdate) and FTarefaService.Excluir(StrToIntDef(edCod.Text, 0)) then
+    LimpaCampos;
 end;
 
 procedure TfrmCadastrar.btNovoClick(Sender: TObject);
@@ -100,32 +96,25 @@ begin
 end;
 
 procedure TfrmCadastrar.CarregaDados;
-var
-  wTarefa  : TTarefa;
 begin
+  if not Assigned(FTarefa) then
+    FTarefa := TTarefa.Create;
+
+  FTarefa := FTarefaService.TarefaPorId(StrToInt(edCod.Text));
+
   if Assigned(FTarefa) then
-    wTarefa := FTarefa
-  else
-    wTarefa := TTarefa.Create;
-
-  wTarefa := FTarefaService.TarefaPorId(StrToInt(edCod.Text));
-  try
-    if Assigned(wTarefa) then
-      begin
-        LimpaCampos;
-
-        edTitulo.Text      := wTarefa.Titulo;
-        memDescricao.Lines.Add(wTarefa.Descricao);
-        dtData.DateTime    := wTarefa.DataCriacao;
-        cbStatus.ItemIndex := Ord(wTarefa.Status);
-
-        StatusDAO(FTarefaService.GetStatusDAO);
-      end
-    else
+    begin
       LimpaCampos;
-  finally
-    wTarefa.Free;
-  end;
+
+      edTitulo.Text      := FTarefa.Titulo;
+      memDescricao.Lines.Add(FTarefa.Descricao);
+      dtData.DateTime    := FTarefa.DataCriacao;
+      cbStatus.ItemIndex := Ord(FTarefa.Status);
+
+      StatusDAO(FTarefaService.GetStatusDAO);
+    end
+  else
+    LimpaCampos;
 end;
 
 procedure TfrmCadastrar.CarregarTarefa(prTarefa: TTarefa);
@@ -161,11 +150,16 @@ begin
       TfrmConsultar(Owner).Enabled := True;
       TfrmConsultar(Owner).cbStatusChange(TfrmConsultar(Owner).cbStatus);
     end;
+
+  FTarefa.Free;
 end;
 
 procedure TfrmCadastrar.FormCreate(Sender: TObject);
 begin
-   FTarefaService := TServiceFactory.CreateTarefaService;
+   FTarefa         := TTarefa.Create;
+   FTarefaService  := TServiceFactory.CreateTarefaService;
+   FFeriadoService := TExternalFactory.CreateFeriadoService;
+
 end;
 
 procedure TfrmCadastrar.FormKeyDown(Sender: TObject; var Key: Word;
@@ -206,7 +200,7 @@ end;
 
 procedure TfrmCadastrar.Salvar;
 var
-  wTarefa  : TTarefa;
+  wFeriado : TFeriado;
 begin
   if Trim(edTitulo.Text) = '' then
     begin
@@ -215,35 +209,31 @@ begin
       Exit;
     end;
 
-  if Assigned(FTarefa) then
-    wTarefa := FTarefa
-  else
-    wTarefa := TTarefa.Create;
+  if not Assigned(FTarefa) then
+    FTarefa := TTarefa.Create;
 
-  try
-    wTarefa.Id        := StrToIntDef(edCod.Text, 0);
-    wTarefa.Titulo    := edTitulo.Text;
-    wTarefa.Descricao := memDescricao.Text;
-    wTarefa.Status    := TStatusTarefa(cbStatus.ItemIndex);
+    FTarefa.Id             := StrToIntDef(edCod.Text, 0);
+    FTarefa.Titulo         := edTitulo.Text;
+    FTarefa.Descricao      := memDescricao.Text;
+    FTarefa.Status         := TStatusTarefa(cbStatus.ItemIndex);
+    FTarefa.DataVencimento := dtVencto.DateTime;
 
-    try
-      FTarefaService.Salvar(wTarefa);
-    finally
-      wTarefa.Free;
-      ShowMessage('Tarefa salva com sucesso!');
-    end;
+    wFeriado :=  FFeriadoService.GetFeriado(FTarefa.DataVencimento);
+
+    if not Assigned(wFeriado) then
+      FTarefaService.Salvar(FTarefa)
+    else
+      begin
+        if MessageDlg(Format('A data de vencimento %s é um feriado (%s).' + #13 + #13 +
+                             'Deseja salvar mesmo assim?',
+                             [DateToStr(FTarefa.DataVencimento), wFeriado.Descricao]),
+                             mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+          FTarefaService.Salvar(FTarefa)
+        else
+          dtVencto.SetFocus;
+      end;
 
     ModalResult := mrOk;
-
-  except
-    on E: Exception do
-      begin
-        ShowMessage('Erro ao salvar tarefa: ' + E.Message);
-
-        if not Assigned(FTarefa) then
-          wTarefa.Free;
-      end;
-  end;
 end;
 
 procedure TfrmCadastrar.StatusDAO(prStatus: TStatusDAO);

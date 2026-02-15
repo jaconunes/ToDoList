@@ -146,6 +146,11 @@
         <DCCReference Include="repository\uTarefaRepository.pas"/>
         <DCCReference Include="service\uITarefaService.pas"/>
         <DCCReference Include="factory\uServiceFactory.pas"/>
+        <DCCReference Include="external\uFeriadoService.pas"/>
+        <DCCReference Include="external\uIFeriadoService.pas"/>
+        <DCCReference Include="factory\uExternalFactory.pas"/>
+        <DCCReference Include="external\uFeriadoCache.pas"/>
+        <DCCReference Include="external\model\uFeriadoModel.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

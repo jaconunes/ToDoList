@@ -1,0 +1,17 @@
+unit uIFeriadoService;
+
+interface
+
+uses
+  System.SysUtils;
+
+type
+  IFeriadoService = interface
+    ['{A12B34C5-D678-4E9F-ABCD-123456789999}']
+    function EhFeriado(const prData: TDate; var prDesc : String): Boolean;
+  end;
+
+implementation
+
+end.
+

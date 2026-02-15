@@ -34,7 +34,9 @@ procedure TfrmPrincipal.FormShow(Sender: TObject);
 begin
   try
     dmConexao.Conectar;
-//    ShowMessage('Conectado ao MySQL com sucesso!');
+
+    if not dmConexao.Connected then
+      Application.Terminate;
   except
   on E: Exception do
     ShowMessage(E.Message);
